@@ -1,36 +1,36 @@
 mod terminal;
+mod fractal;
 
 use std::env;
 
 fn help() {
-    println!("cargo run -- manual : Run the program in manual mode");
-    println!("cargo run -- auto : Run the program in automatic mode");
+    println!("cargo run");
 }
 
 fn main() {
 
-    // let args: Vec<String> = env::args().collect();
-    // if args.len() != 2 {
-    //     help();
-    //     return;
-    // } else if args[1] == "manual" {
-    // } else if args[1] == "auto" {
-    // } else {
-    //     help();
-    //     return;
-    // }
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 1 {
+        help();
+        return;
+    }
 
     let mut terminal = terminal::Terminal::new();
+    let size = terminal.get_size();
+    let mut fractal = fractal::Fractal::new(size);
 
     terminal.initiate_terminal();
 
     loop {
-        if terminal.handle_input() {
+        if terminal.handle_input(&mut fractal) {
             break;
         }
 
         terminal.now();
-        terminal.check_time();
+        if terminal.check_time() {
+            fractal.update();
+            fractal.render(&terminal);
+        }
     }
 
     terminal.clear_terminal();
