@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 use std::io::{self, Write};
 use std::thread::sleep;
 
-const FPS: u64 = 60;
+const FPS: u64 = 5;
 
 pub struct Terminal {
     size: u16,
@@ -90,14 +90,39 @@ impl Terminal {
         return false;
     }
 
-    pub fn draw(&self, x: f32, y: f32, c: char) {
+    pub fn draw(&self, x: f32, y: f32, n: u32) {
         let resized_x: u16 = (x + (self.cols / 2) as f32).floor() as u16;
         let resized_y: u16 = (y + (self.rows / 2) as f32).floor() as u16;
+        let c;
+        if n < 100 {
+            c = ' ';
+        } else if n < 1000 {
+            c = 'a';
+        } else if n < 2000 {
+            c = 'b';
+        } else if n < 3000 {
+            c = 'c';
+        } else if n < 4000 {
+            c = 'd';
+        } else if n < 5000 {
+            c = 'e';
+        } else if n < 6000 {
+            c = 'f';
+        } else if n < 7000 {
+            c = 'g';
+        } else if n < 8000 {
+            c = 'h';
+        } else if n < 9000 {
+            c = 'i';
+        } else {
+            c = 'j';
+        }
         execute!(io::stdout(), crossterm::cursor::MoveTo(resized_x, resized_y), crossterm::style::Print(c)).unwrap();
     }
 
     pub fn clear(&self) {
         execute!(io::stdout(), Clear(ClearType::All)).unwrap();
+        execute!(io::stdout(), Clear(ClearType::Purge)).unwrap();
     }
 
     pub fn flush(&self) {
