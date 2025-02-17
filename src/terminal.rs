@@ -1,4 +1,4 @@
-use crate::fractal::Fractal;
+use crate::fractal::FractalTrait;
 
 use crossterm::{execute, cursor::{Hide, Show}, terminal::{disable_raw_mode, enable_raw_mode, size, Clear, ClearType}};
 use crossterm::event::{self, Event, KeyCode, KeyModifiers};
@@ -6,10 +6,9 @@ use std::time::{Duration, Instant};
 use std::io::{self, Write};
 use std::thread::sleep;
 
-const FPS: u64 = 5;
+const FPS: u64 = 60;
 
 pub struct Terminal {
-    size: u16,
     cols: u16,
     rows: u16,
     frame_duration: Duration,
@@ -24,7 +23,6 @@ impl Terminal {
         Terminal {
             cols,
             rows,
-            size: if cols < rows { cols } else { rows },
             frame_duration: Duration::from_secs_f64(1.0 / FPS as f64),
             last_frame: Instant::now(),
             now: Instant::now(),
@@ -57,11 +55,15 @@ impl Terminal {
         return false;
     }
 
-    pub fn get_size(&self) -> u16 {
-        self.size
+    pub fn get_rows(&self) -> u16 {
+        self.rows
     }
 
-    pub fn handle_input(&self, fractal: &mut Fractal) -> bool {
+    pub fn get_cols(&self) -> u16 {
+        self.cols
+    }
+
+    pub fn handle_input(&self, fractal: &mut dyn FractalTrait) -> bool {
         if event::poll(Duration::from_millis(1)).unwrap() {
             if let Event::Key(key_event) = event::read().unwrap() {
                 if key_event.code == KeyCode::Char('d') && key_event.modifiers.contains(KeyModifiers::CONTROL) {
@@ -90,40 +92,35 @@ impl Terminal {
         return false;
     }
 
-    pub fn draw(&self, x: f32, y: f32, n: u32) {
-        let resized_x: u16 = (x + (self.cols / 2) as f32).floor() as u16;
-        let resized_y: u16 = (y + (self.rows / 2) as f32).floor() as u16;
+    pub fn draw(&self, x: u16, y: u16, n: u32, max_iterations: u32) {
         let c;
-        if n < 100 {
+        if n < 10 {
             c = ' ';
-        } else if n < 1000 {
-            c = 'a';
-        } else if n < 2000 {
-            c = 'b';
-        } else if n < 3000 {
-            c = 'c';
-        } else if n < 4000 {
-            c = 'd';
-        } else if n < 5000 {
-            c = 'e';
-        } else if n < 6000 {
-            c = 'f';
-        } else if n < 7000 {
-            c = 'g';
-        } else if n < 8000 {
-            c = 'h';
-        } else if n < 9000 {
-            c = 'i';
+        } else if n < max_iterations / 200 { // 200
+            c = '.';
+        } else if n < max_iterations / 100 { // 100
+            c = ':';
+        } else if n < max_iterations / 20 { // 20
+            c = '-';
+        } else if n < max_iterations / 10 { // 10
+            c = '=';
+        } else if n < max_iterations / 5 { // 5
+            c = '+';
+        } else if n < max_iterations / 2 - 2 * max_iterations / 5 { // 2 - 2/5
+            c = '*';
+        } else if n < max_iterations / 2 - max_iterations / 5 { // 2 - 1/5
+            c = '%';
+        } else if n < max_iterations / 2 { // 2
+            c = '#';
         } else {
-            c = 'j';
+            c = '@';
         }
-        execute!(io::stdout(), crossterm::cursor::MoveTo(resized_x, resized_y), crossterm::style::Print(c)).unwrap();
+        execute!(io::stdout(), crossterm::cursor::MoveTo(y, x), crossterm::style::Print(c)).unwrap();
     }
 
-    pub fn clear(&self) {
-        execute!(io::stdout(), Clear(ClearType::All)).unwrap();
-        execute!(io::stdout(), Clear(ClearType::Purge)).unwrap();
-    }
+    // pub fn clear(&self) {
+    //     execute!(io::stdout(), Clear(ClearType::All)).unwrap();
+    // }
 
     pub fn flush(&self) {
         io::stdout().flush().unwrap();
