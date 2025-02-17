@@ -4,7 +4,7 @@ mod fractal;
 use std::env;
 
 fn help() {
-    println!("cargo run <mandelbrot|aesthetic|depth|stability|x y>");
+    println!("cargo run <spiral|cosmicarc|fractalburst|celestialspiral|heart|mandelbulb|cycloneeye|goldenspiral|flame>");
 }
 
 fn main() {
@@ -18,12 +18,24 @@ fn main() {
     if args.len() == 2 {
         if args[1] == "mandelbrot" {
             fractal = Box::new(fractal::Mandelbrot::new(rows, cols));
-        } else if args[1] == "aesthetic" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, -0.8, 0.156));
-        } else if args[1] == "depth" {
+        } else if args[1] == "spiral" {
+            fractal = Box::new(fractal::Julia::new(rows, cols, -0.70176, 0.3842));
+        } else if args[1] == "cosmicarc" {
             fractal = Box::new(fractal::Julia::new(rows, cols, 0.285, 0.01));
-        } else if args[1] == "stability" {
+        } else if args[1] == "fractalburst" {
+            fractal = Box::new(fractal::Julia::new(rows, cols, -0.8, 0.156));
+        } else if args[1] == "celestialspiral" {
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.8, 0.156));
+        } else if args[1] == "heart" {
             fractal = Box::new(fractal::Julia::new(rows, cols, -0.4, 0.6));
+        } else if args[1] == "mandelbulb" {
+            fractal = Box::new(fractal::Julia::new(rows, cols, -1.0, 0.0));
+        } else if args[1] == "cycloneeye" {
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.0, 0.0));
+        } else if args[1] == "goldenspiral" {
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.355, 0.355));
+        } else if args[1] == "flame" {
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.3, 0.4));
         } else {
             help();
             return;
