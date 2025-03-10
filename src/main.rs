@@ -17,25 +17,25 @@ fn main() {
 
     if args.len() == 2 {
         if args[1] == "mandelbrot" {
-            fractal = Box::new(fractal::Mandelbrot::new(rows, cols));
+            fractal = Box::new(fractal::Mandelbrot::new(rows, cols, 10000));
         } else if args[1] == "spiral" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, -0.70176, 0.3842));
+            fractal = Box::new(fractal::Julia::new(rows, cols, -0.70176, 0.3842, 500));
         } else if args[1] == "cosmicarc" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, 0.285, 0.01));
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.285, 0.01, 500));
         } else if args[1] == "fractalburst" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, -0.8, 0.156));
+            fractal = Box::new(fractal::Julia::new(rows, cols, -0.8, 0.156, 500));
         } else if args[1] == "celestialspiral" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, 0.8, 0.156));
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.8, 0.156, 500));
         } else if args[1] == "heart" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, -0.4, 0.6));
+            fractal = Box::new(fractal::Julia::new(rows, cols, -0.4, 0.6, 500));
         } else if args[1] == "mandelbulb" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, -1.0, 0.0));
+            fractal = Box::new(fractal::Julia::new(rows, cols, -1.0, 0.0, 500));
         } else if args[1] == "cycloneeye" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, 0.0, 0.0));
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.1, 0.65, 500));
         } else if args[1] == "goldenspiral" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, 0.355, 0.355));
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.355, 0.355, 500));
         } else if args[1] == "flame" {
-            fractal = Box::new(fractal::Julia::new(rows, cols, 0.3, 0.4));
+            fractal = Box::new(fractal::Julia::new(rows, cols, 0.3, 0.4, 500));
         } else {
             help();
             return;
@@ -49,7 +49,7 @@ fn main() {
             help();
             std::process::exit(1);
         });
-        fractal = Box::new(fractal::Julia::new(rows, cols, x, y));
+        fractal = Box::new(fractal::Julia::new(rows, cols, x, y, 500));
     } else {
         help();
         return;

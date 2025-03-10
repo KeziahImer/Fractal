@@ -28,23 +28,23 @@ pub struct Fractal {
     cols: u16,
     offset_x: Range,
     offset_y: Range,
+    max_iterations: u32,
 }
 
 pub struct Mandelbrot {
     pub fractal: Fractal,
-    max_iterations: u32,
 }
 
 impl Mandelbrot {
-    pub fn new(rows: u16, cols: u16) -> Mandelbrot {
+    pub fn new(rows: u16, cols: u16, max_iterations: u32) -> Mandelbrot {
         Mandelbrot {
             fractal: Fractal {
                 rows,
                 cols,
                 offset_x: Range { min: -2.0, max: 2.0 },
                 offset_y: Range { min: -2.0, max: 2.0 },
+                max_iterations,
             },
-            max_iterations: 10000,
         }
     }
 }
@@ -63,13 +63,13 @@ impl FractalTrait for Mandelbrot {
                 let mut z = Coordinate { x: 0.0, y: 0.0 };
                 let c = Coordinate { x, y };
                 let mut n = 0;
-                while z.x * z.x + z.y * z.y <= 2.0 * 2.0 && n < self.max_iterations {
+                while z.x * z.x + z.y * z.y <= 2.0 * 2.0 && n < self.fractal.max_iterations {
                     let x_new = z.x * z.x - z.y * z.y + c.x;
                     z.y = 2.0 * z.x * z.y + c.y;
                     z.x = x_new;
                     n += 1;
                 }
-                terminal.draw(i, j, n, self.max_iterations);
+                terminal.draw(i, j, n, self.fractal.max_iterations);
             }
         }
     }
@@ -118,20 +118,19 @@ impl FractalTrait for Mandelbrot {
 pub struct Julia {
     fractal: Fractal,
     c: Coordinate,
-    max_iterations: u32,
 }
 
 impl Julia {
-    pub fn new(rows: u16, cols: u16, x: f32, y: f32) -> Julia {
+    pub fn new(rows: u16, cols: u16, x: f32, y: f32, max_iterations: u32) -> Julia {
         Julia {
             fractal: Fractal {
                 rows,
                 cols,
                 offset_x: Range { min: -2.0, max: 2.0 },
                 offset_y: Range { min: -2.0, max: 2.0 },
+                max_iterations,
             },
             c: Coordinate { x, y },
-            max_iterations: 5000,
         }
     }
 }
@@ -149,13 +148,13 @@ impl FractalTrait for Julia {
                 let y = self.fractal.offset_y.min + (i as f32) * ((self.fractal.offset_y.max - self.fractal.offset_y.min) / self.fractal.rows as f32);
                 let mut z = Coordinate { x, y };
                 let mut n = 0;
-                while z.x * z.x + z.y * z.y <= 2.0 * 2.0 && n < self.max_iterations {
+                while z.x * z.x + z.y * z.y <= 2.0 * 2.0 && n < self.fractal.max_iterations {
                     let x_new = z.x * z.x - z.y * z.y + self.c.x;
                     z.y = 2.0 * z.x * z.y + self.c.y;
                     z.x = x_new;
                     n += 1;
                 }
-                terminal.draw(i, j, n, self.max_iterations);
+                terminal.draw(i, j, n, self.fractal.max_iterations);
             }
         }
     }
