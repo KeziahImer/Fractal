@@ -42,7 +42,7 @@ impl Mandelbrot {
                 rows,
                 cols,
                 offset_x: Range { min: -2.0, max: 2.0 },
-                offset_y: Range { min: -2.0, max: 2.0 },
+                offset_y: Range { min: -1.0, max: 1.0 },
                 max_iterations,
             },
         }
@@ -75,29 +75,31 @@ impl FractalTrait for Mandelbrot {
     }
 
     fn zoom_in(&mut self) {
-        let zoom = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
-        self.fractal.offset_x.min += zoom;
-        self.fractal.offset_x.max -= zoom;
-        self.fractal.offset_y.min += zoom;
-        self.fractal.offset_y.max -= zoom;
+        let zoom_x = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
+        let zoom_y = (self.fractal.offset_y.max - self.fractal.offset_y.min) * RATIO;
+        self.fractal.offset_x.min += zoom_x;
+        self.fractal.offset_x.max -= zoom_x;
+        self.fractal.offset_y.min += zoom_y;
+        self.fractal.offset_y.max -= zoom_y;
     }
 
     fn zoom_out(&mut self) {
-        let zoom = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
-        self.fractal.offset_x.min -= zoom;
-        self.fractal.offset_x.max += zoom;
-        self.fractal.offset_y.min -= zoom;
-        self.fractal.offset_y.max += zoom;
+        let zoom_x = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
+        let zoom_y = (self.fractal.offset_y.max - self.fractal.offset_y.min) * RATIO;
+        self.fractal.offset_x.min -= zoom_x;
+        self.fractal.offset_x.max += zoom_x;
+        self.fractal.offset_y.min -= zoom_y;
+        self.fractal.offset_y.max += zoom_y;
     }
 
     fn move_up(&mut self) {
-        let step = RATIO * (self.fractal.offset_x.max - self.fractal.offset_x.min);
+        let step = RATIO * (self.fractal.offset_y.max - self.fractal.offset_y.min);
         self.fractal.offset_y.min -= step;
         self.fractal.offset_y.max -= step;
     }
 
     fn move_down(&mut self) {
-        let step = RATIO * (self.fractal.offset_x.max - self.fractal.offset_x.min);
+        let step = RATIO * (self.fractal.offset_y.max - self.fractal.offset_y.min);
         self.fractal.offset_y.min += step;
         self.fractal.offset_y.max += step;
     }
@@ -127,7 +129,7 @@ impl Julia {
                 rows,
                 cols,
                 offset_x: Range { min: -2.0, max: 2.0 },
-                offset_y: Range { min: -2.0, max: 2.0 },
+                offset_y: Range { min: -1.0, max: 1.0 },
                 max_iterations,
             },
             c: Coordinate { x, y },
@@ -148,7 +150,7 @@ impl FractalTrait for Julia {
                 let y = self.fractal.offset_y.min + (i as f32) * ((self.fractal.offset_y.max - self.fractal.offset_y.min) / self.fractal.rows as f32);
                 let mut z = Coordinate { x, y };
                 let mut n = 0;
-                while z.x * z.x + z.y * z.y <= 2.0 * 2.0 && n < self.fractal.max_iterations {
+                while z.x * z.x + z.y * z.y <= 2.0 * 2.0 && n < (self.fractal.max_iterations / 2) {
                     let x_new = z.x * z.x - z.y * z.y + self.c.x;
                     z.y = 2.0 * z.x * z.y + self.c.y;
                     z.x = x_new;
@@ -160,29 +162,31 @@ impl FractalTrait for Julia {
     }
 
     fn zoom_in(&mut self) {
-        let zoom = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
-        self.fractal.offset_x.min += zoom;
-        self.fractal.offset_x.max -= zoom;
-        self.fractal.offset_y.min += zoom;
-        self.fractal.offset_y.max -= zoom;
+        let zoom_x = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
+        let zoom_y = (self.fractal.offset_y.max - self.fractal.offset_y.min) * RATIO;
+        self.fractal.offset_x.min += zoom_x;
+        self.fractal.offset_x.max -= zoom_x;
+        self.fractal.offset_y.min += zoom_y;
+        self.fractal.offset_y.max -= zoom_y;
     }
 
     fn zoom_out(&mut self) {
-        let zoom = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
-        self.fractal.offset_x.min -= zoom;
-        self.fractal.offset_x.max += zoom;
-        self.fractal.offset_y.min -= zoom;
-        self.fractal.offset_y.max += zoom;
+        let zoom_x = (self.fractal.offset_x.max - self.fractal.offset_x.min) * RATIO;
+        let zoom_y = (self.fractal.offset_y.max - self.fractal.offset_y.min) * RATIO;
+        self.fractal.offset_x.min -= zoom_x;
+        self.fractal.offset_x.max += zoom_x;
+        self.fractal.offset_y.min -= zoom_y;
+        self.fractal.offset_y.max += zoom_y;
     }
 
     fn move_up(&mut self) {
-        let step = RATIO * (self.fractal.offset_x.max - self.fractal.offset_x.min);
+        let step = RATIO * (self.fractal.offset_y.max - self.fractal.offset_y.min);
         self.fractal.offset_y.min -= step;
         self.fractal.offset_y.max -= step;
     }
 
     fn move_down(&mut self) {
-        let step = RATIO * (self.fractal.offset_x.max - self.fractal.offset_x.min);
+        let step = RATIO * (self.fractal.offset_y.max - self.fractal.offset_y.min);
         self.fractal.offset_y.min += step;
         self.fractal.offset_y.max += step;
     }
@@ -199,4 +203,3 @@ impl FractalTrait for Julia {
         self.fractal.offset_x.max += step;
     }
 }
-
